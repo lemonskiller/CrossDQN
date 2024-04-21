@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from input import *
 from model import *
+import tensorflow as tf
+
 
 def create_estimator():
     tf.logging.set_verbosity(tf.logging.INFO)
@@ -24,10 +26,10 @@ def save_estimator(estimator, export_dir):
         receiver_tensors = {
             'user_id': tf.placeholder(tf.int64, [None, 1], name='user_id'),
             'behavior_poi_id_list': tf.placeholder(tf.int64, [None, 10], name='behavior_poi_id_list'),
-            'ad_id_list': tf.placeholder(tf.float32, [None, 5], name='ad_id_list'),
-            'oi_id_list': tf.placeholder(tf.float32, [None, 5], name='oi_id_list'),
-            'context_id': tf.placeholder(tf.float32, [None, 1], name='context_id'),
-            'action':  tf.placeholder(tf.float32, [None, 5], name='action')
+            'ad_id_list': tf.placeholder(tf.int32, [None, 5], name='ad_id_list'),
+            'oi_id_list': tf.placeholder(tf.int32, [None, 5], name='oi_id_list'),
+            'context_id': tf.placeholder(tf.int32, [None, 1], name='context_id'),
+            'action': tf.placeholder(tf.int32, [None, 5], name='action')
         }
         return tf.estimator.export.ServingInputReceiver(receiver_tensors=receiver_tensors, features=receiver_tensors)
     export_dir = estimator.export_savedmodel(export_dir_base=export_dir, serving_input_receiver_fn=_serving_input_receiver_fn)

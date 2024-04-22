@@ -9,9 +9,11 @@ def demo_tfrecord_data(tfrecord_file_name):
     # 1+10+5+5+1+action_len
     # user_id, history_poi_id_list, ad_id_list, oi_id_list, context_id, R_ad, R_fee, R_ex
     demo_data = [
-        [[121, 123, 456, 789, 321, 0, 0, 0, 0, 0, 0, 23, 31, 42, 22, 67, 76, 321, 36, 93, 22, 13, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [[121, 123, 456, 789, 321, 0, 0, 0, 0, 0, 0, 23, 31, 42, 22, 67, 76, 321, 36, 93, 22, 13, 1, 1, 0, 0, 0, 1, 0,
+          0, 0, 0, 0, 0, 0, 0, 0],
          [1.2, 2, 2.1]],
-        [[121, 123, 456, 789, 321, 0, 0, 0, 0, 0, 0, 23, 31, 42, 22, 67, 76, 321, 36, 93, 22, 13, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [[121, 123, 456, 789, 321, 0, 0, 0, 0, 0, 0, 23, 31, 42, 22, 67, 76, 321, 36, 93, 22, 13, 1, 1, 0, 0, 0, 1, 0,
+          0, 0, 0, 0, 0, 0, 0, 0],
          [1.2, 2, 2.1]]
     ]
 
@@ -48,11 +50,21 @@ def generate_parse_tfrecord_local_fn():
         features = {
             # UID_LEN=1 POI_LIST_LEN=10 AD_LIST_LEN=5 OI_LIST_LEN=5 CONTEXT_ID_LEN=1 ACTION_LEN=15
             'user_id': tf.cast(tf.gather(feature_buffer, list(range(0, UID_LEN)), axis=1), tf.int64),
-            'behavior_poi_id_list': tf.cast(tf.gather(feature_buffer, list(range(UID_LEN, UID_LEN+POI_LIST_LEN)), axis=1), tf.int64),
-            'ad_id_list': tf.cast(tf.gather(feature_buffer, list(range(UID_LEN+POI_LIST_LEN, UID_LEN+POI_LIST_LEN+AD_LIST_LEN)), axis=1), tf.int64),
-            'oi_id_list': tf.cast(tf.gather(feature_buffer, list(range(UID_LEN+POI_LIST_LEN+AD_LIST_LEN, UID_LEN+POI_LIST_LEN+AD_LIST_LEN+OI_LIST_LEN)), axis=1), tf.int64),
-            'context_id': tf.cast(tf.gather(feature_buffer, list(range(UID_LEN+POI_LIST_LEN+AD_LIST_LEN+OI_LIST_LEN, UID_LEN+POI_LIST_LEN+AD_LIST_LEN+OI_LIST_LEN+CONTEXT_ID_LEN)), axis=1), tf.int64),
-            'action': tf.cast(tf.gather(feature_buffer, list(range(UID_LEN+POI_LIST_LEN+AD_LIST_LEN+OI_LIST_LEN+CONTEXT_ID_LEN, UID_LEN+POI_LIST_LEN+AD_LIST_LEN+OI_LIST_LEN+CONTEXT_ID_LEN+ACTION_LEN)), axis=1), tf.int32)
+            'behavior_poi_id_list': tf.cast(
+                tf.gather(feature_buffer, list(range(UID_LEN, UID_LEN + POI_LIST_LEN)), axis=1), tf.int64),
+            'ad_id_list': tf.cast(
+                tf.gather(feature_buffer, list(range(UID_LEN + POI_LIST_LEN, UID_LEN + POI_LIST_LEN + AD_LIST_LEN)),
+                          axis=1), tf.int64),
+            'oi_id_list': tf.cast(tf.gather(feature_buffer, list(
+                range(UID_LEN + POI_LIST_LEN + AD_LIST_LEN, UID_LEN + POI_LIST_LEN + AD_LIST_LEN + OI_LIST_LEN)),
+                                            axis=1), tf.int64),
+            'context_id': tf.cast(tf.gather(feature_buffer, list(
+                range(UID_LEN + POI_LIST_LEN + AD_LIST_LEN + OI_LIST_LEN,
+                      UID_LEN + POI_LIST_LEN + AD_LIST_LEN + OI_LIST_LEN + CONTEXT_ID_LEN)), axis=1), tf.int64),
+            'action': tf.cast(tf.gather(feature_buffer, list(
+                range(UID_LEN + POI_LIST_LEN + AD_LIST_LEN + OI_LIST_LEN + CONTEXT_ID_LEN,
+                      UID_LEN + POI_LIST_LEN + AD_LIST_LEN + OI_LIST_LEN + CONTEXT_ID_LEN + ACTION_LEN)), axis=1),
+                              tf.int32)
         }
         label_buffer = parsed_features['label']
         labels = {
@@ -77,6 +89,7 @@ def input_fn_maker(file_names):
         dataset = dataset.map(_parse_fn, num_parallel_calls=NUM_PARALLEL)
         iterator = dataset.make_one_shot_iterator()
         return iterator.get_next()
+
     return input_fn
 
 

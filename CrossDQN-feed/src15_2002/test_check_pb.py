@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from main import *
 
-
 if __name__ == '__main__':
     estimator = create_estimator()
     # 指定.pb文件的路径

@@ -186,7 +186,7 @@ class CrossDQN:
 
     def _V_network(self, ads_emb, ois_emb):
 
-        vnet_input = tf.reshape(tf.concat([ads_emb, ois_emb], axis=1),[-1, 40])
+        vnet_input = tf.reshape(tf.concat([ads_emb, ois_emb], axis=1), [-1, 40])
         vnet_mlp_layer_1_all = tf.layers.dense(vnet_input, 40, activation=tf.nn.sigmoid, name='v1_mlp',
                                                reuse=tf.AUTO_REUSE)
         vnet_mlp_layer_2_all = tf.layers.dense(vnet_mlp_layer_1_all, 20, activation=tf.nn.sigmoid, name='v2_mlp',

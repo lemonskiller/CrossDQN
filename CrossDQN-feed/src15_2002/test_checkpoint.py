@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from main import *
 
-
 if __name__ == '__main__':
     #  --- 查看网络结构 ---
     # 加载已保存的模型

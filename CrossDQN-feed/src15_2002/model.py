@@ -54,24 +54,24 @@ class CrossDQN:
         # V, A
         V_value = self._V_network(ads_emb, ois_emb)
         A_value = self._A_network(signal_vector)
-        print('!'*12+'A_value', A_value)
-        print('!'*12+'V_value', V_value)
+        print('!' * 12 + 'A_value', A_value)
+        print('!' * 12 + 'V_value', V_value)
         self.Q_value = V_value + A_value
         # res los
-        print('*'*5, 'whole_action_vector',
+        print('*' * 5, 'whole_action_vector',
               whole_action_vector)  # (?, 2002, 60)
         A_value_whole_action = tf.reshape(self._A_network(
             tf.reshape(whole_action_vector, [-1, ACTION_LEN * CHANNEL_CNT])), [-1, ACTION_NUM])  # (?, 20, 32)
         max_q_action_index = tf.reshape(tf.one_hot(
             tf.argmax(A_value_whole_action, axis=1), depth=ACTION_NUM), [-1, ACTION_NUM])  # (?, 32)
 
-        print('*'*50, 'whole_action_vector', whole_action_vector)
-        print('*'*50, 'A_value_whole_action', A_value_whole_action)
+        print('*' * 50, 'whole_action_vector', whole_action_vector)
+        print('*' * 50, 'A_value_whole_action', A_value_whole_action)
 
-        print('*'*50, 'max_q_action_index', max_q_action_index)
-        print('*='*50, 'size WHOLE_ACTION_RES',
+        print('*' * 50, 'max_q_action_index', max_q_action_index)
+        print('*=' * 50, 'size WHOLE_ACTION_RES',
               len(WHOLE_ACTION_RES))
-        print('*='*50, 'self.Q_value', self.Q_value)
+        print('*=' * 50, 'self.Q_value', self.Q_value)
 
         self.eval_res = tf.reduce_sum(tf.constant(
             WHOLE_ACTION_RES) * max_q_action_index, axis=[0, 1])
@@ -79,7 +79,7 @@ class CrossDQN:
         # self.eval_res = tf.reduce_sum(tf.constant(
         #     A_value_whole_action) * max_q_action_index, axis=[0, 1])
 
-        print('*='*50, 'self.eval_res', self.eval_res)
+        print('*=' * 50, 'self.eval_res', self.eval_res)
 
     def _emb_layer(self, features):
         user_emb = tf.reshape(tf.nn.embedding_lookup(
@@ -144,7 +144,7 @@ class CrossDQN:
         return outputs
 
     def _SACU(self, ads_emb, ois_emb, action):
-        print('$'*3+' action ', action)
+        print('$' * 3 + ' action ', action)
         ad_index = action  # batch * 5
         nature_index = 1 - action  # batch * 5
         ad_cum_index = tf.cumsum(ad_index, axis=1) - 1  # batch * 5
@@ -175,8 +175,8 @@ class CrossDQN:
         cross_fea = tf.matmul(tf.cast(ad_cum_index_onehot, tf.float32),
                               tf.tile(tf.expand_dims(ads_emb, axis=1), [1, ACTION_NUM, 1, 1])) * tf.expand_dims(
             tf.cast(ad_index, tf.float32), axis=3) + \
-            tf.matmul(tf.cast(nature_cum_index_onehot, tf.float32),
-                      tf.tile(tf.expand_dims(ois_emb, axis=1), [1, ACTION_NUM, 1, 1])) * tf.expand_dims(
+                    tf.matmul(tf.cast(nature_cum_index_onehot, tf.float32),
+                              tf.tile(tf.expand_dims(ois_emb, axis=1), [1, ACTION_NUM, 1, 1])) * tf.expand_dims(
             tf.cast(nature_index, tf.float32), axis=3)
         return tf.reshape(cross_fea, [-1, ACTION_NUM, ACTION_LEN * CHANNEL_CNT])
 
@@ -217,7 +217,7 @@ class CrossDQN:
         attention_map = tf.nn.softmax(attention_map)  # batch * 5 * 5
 
         output = tf.reshape(
-            tf.matmul(attention_map, encoder_V), (-1, ACTION_LEN*CHANNEL_CNT))  # batch * 5 * 4
+            tf.matmul(attention_map, encoder_V), (-1, ACTION_LEN * CHANNEL_CNT))  # batch * 5 * 4
         print('--- output ', output)
         return output
 
@@ -235,12 +235,12 @@ class CrossDQN:
 
     def _A_network(self, ori_fea):
         fea = ori_fea
-        print('A'*10+' ori_fea ', tf.shape(ori_fea), ori_fea)
+        print('A' * 10 + ' ori_fea ', tf.shape(ori_fea), ori_fea)
         for i in range(CHANNEL_CNT):
-            print('+a'*10, fea, self._MCAU(ori_fea, i))
+            print('+a' * 10, fea, self._MCAU(ori_fea, i))
             print(tf.shape(self._MCAU(ori_fea, i)))
             fea = tf.concat([fea, self._MCAU(ori_fea, i)], axis=1)
-        print('-a'*10+' fea ', tf.shape(fea), fea)  # (?, 120)
+        print('-a' * 10 + ' fea ', tf.shape(fea), fea)  # (?, 120)
         anet_mlp_layer_1_all = tf.layers.dense(fea, 80, activation=tf.nn.sigmoid, name='a1_mlp',
                                                reuse=tf.AUTO_REUSE)  # [100, 80]
         anet_mlp_layer_2_all = tf.layers.dense(anet_mlp_layer_1_all, 40, activation=tf.nn.sigmoid, name='a2_mlp',
@@ -250,7 +250,7 @@ class CrossDQN:
         anet_mlp_layer_3_all = tf.layers.dense(anet_mlp_layer_2_all, ACTION_NUM, activation=None, name='a3_mlp',
                                                reuse=tf.AUTO_REUSE)  # [40, 32]
 
-        print('-a'*10+' anet_mlp_layer_3_all ',
+        print('-a' * 10 + ' anet_mlp_layer_3_all ',
               tf.shape(anet_mlp_layer_3_all), anet_mlp_layer_3_all)
         return anet_mlp_layer_3_all
 
@@ -264,19 +264,19 @@ class CrossDQN:
         elif mode == tf.estimator.ModeKeys.PREDICT:
             outputs = {'Q_value': tf.identity(self.Q_value, "Q_value")}
             export_outputs = {tf.saved_model.signature_constants.DEFAULT_SERVING_SIGNATURE_DEF_KEY:
-                              tf.estimator.export.PredictOutput(outputs)}
+                                  tf.estimator.export.PredictOutput(outputs)}
             return tf.estimator.EstimatorSpec(mode=mode, predictions=outputs, export_outputs=export_outputs)
 
     def create_loss(self, labels):
         self.reward = AD_WEIGHT * \
-            labels['r_ad'] + FEE_WEIGHT * \
-            labels['r_fee'] + REX_WEIGHT * labels['r_ex']
+                      labels['r_ad'] + FEE_WEIGHT * \
+                      labels['r_fee'] + REX_WEIGHT * labels['r_ex']
         self.loss = tf.reduce_mean(tf.square(self.Q_value - self.reward))
         if USE_AUX_RES_LOSS:
             self.loss = self.loss + AUX_RES_LOSS_WIEHGT * \
-                tf.square(self.eval_res - TARGET_RES)
-            print('!'*10, self.loss)
-            print('-+'*10, self.eval_res)
+                        tf.square(self.eval_res - TARGET_RES)
+            print('!' * 10, self.loss)
+            print('-+' * 10, self.eval_res)
 
     def create_optimizer(self):
         self.optimizer = tf.train.AdamOptimizer(learning_rate=LEARNING_RATE, beta1=0.9, beta2=0.999,

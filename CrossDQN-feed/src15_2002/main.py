@@ -2,6 +2,7 @@
 from input import *
 from model import *
 import warnings
+
 warnings.filterwarnings("ignore")
 
 
@@ -32,9 +33,10 @@ def save_estimator(estimator, export_dir):
             'ad_id_list': tf.placeholder(tf.int32, [None, 5], name='ad_id_list'),
             'oi_id_list': tf.placeholder(tf.int32, [None, 5], name='oi_id_list'),
             'context_id': tf.placeholder(tf.int32, [None, 1], name='context_id'),
-            'action':  tf.placeholder(tf.int32, [None, 15], name='action')
+            'action': tf.placeholder(tf.int32, [None, 15], name='action')
         }  # 假设 max_q_action_index 是一个 Tensor
         return tf.estimator.export.ServingInputReceiver(receiver_tensors=receiver_tensors, features=receiver_tensors)
+
     export_dir = estimator.export_savedmodel(
         export_dir_base=export_dir, serving_input_receiver_fn=_serving_input_receiver_fn)
     return export_dir

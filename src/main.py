@@ -32,7 +32,9 @@ def save_estimator(estimator, export_dir):
             'action': tf.placeholder(tf.int32, [None, 5], name='action')
         }
         return tf.estimator.export.ServingInputReceiver(receiver_tensors=receiver_tensors, features=receiver_tensors)
-    export_dir = estimator.export_savedmodel(export_dir_base=export_dir, serving_input_receiver_fn=_serving_input_receiver_fn)
+
+    export_dir = estimator.export_savedmodel(export_dir_base=export_dir,
+                                             serving_input_receiver_fn=_serving_input_receiver_fn)
     return export_dir
 
 

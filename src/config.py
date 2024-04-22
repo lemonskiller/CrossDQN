@@ -1,4 +1,4 @@
-DATA_PATH = ["../data/part-r-00001"]
+DATA_PATH = "../data/part-r-00001"
 
 MODEL_SAVE_PATH = "../model/"
 PB_SAVE_PATH = "../pb/"

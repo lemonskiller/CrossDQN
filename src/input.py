@@ -2,6 +2,7 @@
 import tensorflow as tf
 import numpy as np
 from config import *
+import os
 
 
 def demo_tfrecord_data(tfrecord_file_name):
@@ -12,6 +13,11 @@ def demo_tfrecord_data(tfrecord_file_name):
         [[121, 123, 456, 789, 321, 0, 0, 0, 0, 0, 0, 23, 31, 42, 22, 67, 76, 321, 36, 93, 22, 13, 1, 2, 3, 32, 2],
          [1.2, 2, 2.1]]
     ]
+
+    directory = os.path.dirname(tfrecord_file_name)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
     writer = tf.io.TFRecordWriter(tfrecord_file_name)
     for item in demo_data:
         exam = tf.train.Example(
@@ -73,7 +79,7 @@ def input_fn_maker(file_names):
 
 
 if __name__ == '__main__':
-    # demo_tfrecord_data("part-r-00001")
+    demo_tfrecord_data(DATA_PATH)
     train_input_fn = input_fn_maker(DATA_PATH)
     features, labels = train_input_fn()
     sess = tf.Session()

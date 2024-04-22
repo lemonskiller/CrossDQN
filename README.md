@@ -24,7 +24,7 @@ $ python main.py
   ```
   conda config --env --set subdir osx-64
   ```
-- change format
+- change format in input.py
   ```
     receiver_tensors = {
       'user_id': tf.placeholder(tf.int64, [None, 1], name='user_id'),
@@ -36,6 +36,9 @@ $ python main.py
       }
   from tf.float to tf.int32 
   ```
+- steps 
+  1. Run ```python input.py``` first for generating demo data
+  2. Run ```python main.py``` then
 
 
 
